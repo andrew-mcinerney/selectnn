@@ -13,7 +13,7 @@ Authors@R: c(
            email = "kevin.burke@ul.ie"))
 Description: Provides various functions that allow for a statistical-modelling
     approach to neural network. Current implementation allows the use of nnet.
-License: use_gpl_license() 
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
