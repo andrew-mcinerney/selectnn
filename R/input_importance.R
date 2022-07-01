@@ -9,6 +9,7 @@
 #' @param n_init Number of random initialisations (tracks)
 #' @param inf_crit Information criterion
 #' @param unif Random initial values max value
+#' @param ... additional argument for nnet
 #' @return The least important input node
 #' @export
 input_importance = function(X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){

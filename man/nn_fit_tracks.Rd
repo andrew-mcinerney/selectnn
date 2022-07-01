@@ -18,6 +18,8 @@ nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 \item{inf_crit}{Information criterion}
 
 \item{unif}{Random initial values max value}
+
+\item{...}{additional argument for nnet}
 }
 \value{
 The best model from the different tracks

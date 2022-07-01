@@ -20,6 +20,8 @@ input_node_sel(X, y, q, n_init, type = "bulk", inf_crit = "BIC", unif = 3, ...)
 \item{inf_crit}{Information criterion}
 
 \item{unif}{Random initial values max value}
+
+\item{...}{additional argument for nnet}
 }
 \value{
 Inputs dropped from model

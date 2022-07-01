@@ -9,6 +9,7 @@
 #' @param n_init Number of random initialisations (tracks)
 #' @param inf_crit Information criterion
 #' @param unif Random initial values max value
+#' @param ... additional argument for nnet
 #' @return The best model from the different tracks
 #' @export
 nn_fit_tracks <- function (X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){

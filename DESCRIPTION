@@ -6,11 +6,16 @@ Authors@R:
            "McInerney",
            role = c("aut", "cre"),
            email = "andrew.mcinerney@ul.ie",
-           comment = c(ORCID = "0000-0002-2348-2159"))
+           comment = c(ORCID = "0000-0002-2348-2159")),
+           person("Kevin",
+           "Burke",
+           role = c("aut"),
+           email = "kevin.burke@ul.ie")
 Description: Provides various functions that allow for a statistical-modelling
     approach to neural network. Current implementation allows the use of nnet.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: use_gpl3_license() 
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Imports: 
+    nnet

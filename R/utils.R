@@ -52,36 +52,6 @@ remove_unit = function(W, dataX, Y, q, inf_crit = 'BIC'){
 }
 
 
-#'Function to rearrange weights due to weight space symmetries
-#' @export
-weight_recover = function(W_true, W_pred, p, q){
-  true  = cbind(matrix(W_true[1:(q*(p + 1))], byrow=T, ncol=(p + 1)), W_true[((p + 1)*q + 2):((p + 1)*q + q + 1)])
-  pred  = cbind(matrix(W_pred[1:(q*(p + 1))], byrow=T, ncol=(p + 1)), W_pred[((p + 1)*q + 2):((p + 1)*q + q + 1)])
-
-  bias_t = W_true[q*(p + 1) + 1]
-  bias_p = W_pred[q*(p + 1) + 1]
-
-  mat = matrix(NA, nrow = q, ncol = q*2)
-
-  for(i in 1:q){
-    mat[i,]=c(rowSums((matrix(rep(pred[i,], q),nrow = q, byrow = T) - true)^2),
-              rowSums((matrix(rep(-pred[i,], q), nrow = q, byrow = T) - true)^2))
-  }
-
-  ind = apply(mat, 1 , which.min)
-
-  for( i in 1:q){
-    if(ind[i] %in% c((q + 1):(2*q))){
-      ind[i] = ind[i] - q
-      bias_p = bias_p + pred[i, ncol(pred)]
-      pred[i,] = -pred[i,]
-    }
-  }
-  predW = pred[order(ind),]
-  predW_vec = c(t(predW[,1:(p + 1)]), bias_p, t(predW[, (p + 2)]))
-  return(predW_vec)
-}
-
 #' Gernerate uniformly random variables in interval not containing values close
 #' to zero#'
 #'

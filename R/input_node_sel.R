@@ -9,6 +9,7 @@
 #' @param type bulk or step
 #' @param inf_crit Information criterion
 #' @param unif Random initial values max value
+#' @param ... additional argument for nnet
 #' @return Inputs dropped from model
 #' @export
 input_node_sel <- function(X, y, q, n_init, type = 'bulk', inf_crit = 'BIC', unif = 3, ...){

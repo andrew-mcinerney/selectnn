@@ -29,6 +29,8 @@ hidden_node_sel(
 \item{inf_crit}{Information criterion}
 
 \item{unif}{Random initial values max value}
+
+\item{...}{additional argument for nnet}
 }
 \value{
 Optimal number of hidden nodes
