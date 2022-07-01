@@ -20,7 +20,7 @@ nn_fit_tracks <- function (X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){
 
   k <- (p + 2)*q + 1
 
-  weight_matrix_init <- matrix(runif(n_init*k, min = -unif, max = unif), ncol = k)
+  weight_matrix_init <- matrix(stats::runif(n_init*k, min = -unif, max = unif), ncol = k)
 
   weight_matrix <- matrix(rep(NA, n_init*k), ncol = k)
   inf_crit_vec <- rep(NA, n_init)

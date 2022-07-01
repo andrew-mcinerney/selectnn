@@ -82,10 +82,16 @@ weight_recover = function(W_true, W_pred, p, q){
   return(predW_vec)
 }
 
-
+#' Gernerate uniformly random variables in interval not containing values close
+#' to zero#'
+#'
+#' @param n number of values
+#' @param unif max value
+#' @param lower min value
+#' @return vector of values
 #' @export
 my_runif = function(n = 1, unif = 1, lower = 0.5){
-  x = runif(n, lower, unif)
+  x = stats::runif(n, lower, unif)
   y = sample(c(-1, 1), n, replace=T)
   return(x*y)
 }

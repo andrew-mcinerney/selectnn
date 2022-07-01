@@ -6,9 +6,9 @@
 \usage{
 hidden_node_sel(
   X,
-  Y,
+  y,
   Q,
-  n_iter,
+  n_init,
   type = "bulk",
   inf_crit = "BIC",
   unif = 3,
@@ -18,17 +18,17 @@ hidden_node_sel(
 \arguments{
 \item{X}{Matrix of covarites}
 
+\item{y}{Vector of response}
+
 \item{Q}{Possible number of hidden nodes}
+
+\item{n_init}{Number of random initialisations (tracks)}
 
 \item{type}{bulk or step}
 
 \item{inf_crit}{Information criterion}
 
 \item{unif}{Random initial values max value}
-
-\item{y}{Vector of response}
-
-\item{n_init}{Number of random initialisations (tracks)}
 }
 \value{
 Optimal number of hidden nodes
