@@ -36,5 +36,5 @@ hidden_node_sel(
 Optimal number of hidden nodes
 }
 \description{
-Performs either bulk or stepwise hidden node selection
+Performs either bulk or step-wise hidden node selection
 }

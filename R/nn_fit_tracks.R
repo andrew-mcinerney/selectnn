@@ -1,9 +1,9 @@
-#' Fits various tracks (different random starting values) and choses best model
+#' Fits various tracks (different random starting values) and chooses best model
 #'
 #' Fits n_init tracks with different initial values and decides on best model
 #' based on information criteria
 #'
-#' @param X Matrix of covarites
+#' @param X Matrix of covariates
 #' @param y Vector of response
 #' @param q Number of hidden nodes
 #' @param n_init Number of random initialisations (tracks)
@@ -13,11 +13,11 @@
 #' @return The best model from the different tracks
 #' @export
 nn_fit_tracks <- function (X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){
-  # Function with fits n_iter tracks of model and finds best
+  # Function with fits n_init tracks of model and finds best
 
   df <- data.frame(X, y)
   n <- nrow(X)
-  p <- ncol(as.matrix(X)) # as.matrix() incase p = 1 (auto. becomes vector)
+  p <- ncol(as.matrix(X)) # as.matrix() in case p = 1 (auto. becomes vector)
 
   k <- (p + 2)*q + 1
 

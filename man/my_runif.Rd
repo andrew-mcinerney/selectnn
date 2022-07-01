@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{my_runif}
 \alias{my_runif}
-\title{Gernerate uniformly random variables in interval not containing values close
+\title{Generate uniformly random variables in interval not containing values close
 to zero#'}
 \usage{
 my_runif(n = 1, unif = 1, lower = 0.5)
@@ -18,6 +18,6 @@ my_runif(n = 1, unif = 1, lower = 0.5)
 vector of values
 }
 \description{
-Gernerate uniformly random variables in interval not containing values close
+Generate uniformly random variables in interval not containing values close
 to zero#'
 }

@@ -1,8 +1,8 @@
 #' Input Node Selection
 #'
-#' Performs either bulk or stepwise input node selection
+#' Performs either bulk or step-wise input node selection
 #'
-#' @param X Matrix of covarites
+#' @param X Matrix of covariates
 #' @param y Vector of response
 #' @param q Number of hidden nodes
 #' @param n_init Number of random initialisations (tracks)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/nn_fit_tracks.R
 \name{nn_fit_tracks}
 \alias{nn_fit_tracks}
-\title{Fits various tracks (different random starting values) and choses best model}
+\title{Fits various tracks (different random starting values) and chooses best model}
 \usage{
 nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 }

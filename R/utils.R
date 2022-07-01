@@ -52,7 +52,7 @@ remove_unit = function(W, dataX, Y, q, inf_crit = 'BIC'){
 }
 
 
-#' Gernerate uniformly random variables in interval not containing values close
+#' Generate uniformly random variables in interval not containing values close
 #' to zero#'
 #'
 #' @param n number of values
@@ -66,7 +66,7 @@ my_runif = function(n = 1, unif = 1, lower = 0.5){
   return(x*y)
 }
 
-#Function is required for nn_fit optimization
+
 #' Calculates normal log-likelihood of neural network
 #'
 #' @param W Weight vector

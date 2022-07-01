@@ -13,7 +13,7 @@ input_node_sel(X, y, q, n_init, type = "bulk", inf_crit = "BIC", unif = 3, ...)
 
 \item{q}{Number of hidden nodes}
 
-\item{n_init}{Number of random initialisations (tracks)}
+\item{n_init}{Number of random initializations (tracks)}
 
 \item{type}{bulk or step}
 
@@ -27,5 +27,5 @@ input_node_sel(X, y, q, n_init, type = "bulk", inf_crit = "BIC", unif = 3, ...)
 Inputs dropped from model
 }
 \description{
-Performs either bulk or stepwise input node selection
+Performs either bulk or step-wise input node selection
 }

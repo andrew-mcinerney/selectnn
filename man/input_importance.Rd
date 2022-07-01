@@ -25,6 +25,6 @@ input_importance(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 The least important input node
 }
 \description{
-Calculates the importance of each input model based on inf_crit and returns
-which node is least important
+Calculates the importance of each input model based on information criterion
+and returns which node is least important
 }

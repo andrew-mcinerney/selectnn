@@ -1,9 +1,9 @@
 #' Determines the importance of each input
 #'
-#' Calculates the importance of each input model based on inf_crit and returns
-#' which node is least important
+#' Calculates the importance of each input model based on information criterion
+#'  and returns which node is least important
 #'
-#' @param X Matrix of covarites
+#' @param X Matrix of covariates
 #' @param y Vector of response
 #' @param q Number of hidden nodes
 #' @param n_init Number of random initialisations (tracks)
