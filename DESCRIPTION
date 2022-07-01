@@ -1,7 +1,7 @@
 Package: selectnn
 Title: Statistical-modelling Approach to Neural Network Model Selection
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R: c(
    person("Andrew",
            "McInerney",
            role = c("aut", "cre"),
@@ -10,7 +10,7 @@ Authors@R:
            person("Kevin",
            "Burke",
            role = c("aut"),
-           email = "kevin.burke@ul.ie")
+           email = "kevin.burke@ul.ie"))
 Description: Provides various functions that allow for a statistical-modelling
     approach to neural network. Current implementation allows the use of nnet.
 License: use_gpl3_license() 
