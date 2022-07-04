@@ -12,16 +12,14 @@
 #' @param ... additional argument for nnet
 #' @return The least important input node
 #' @export
-input_importance = function(X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){
-
+input_importance <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...) {
   p_full <- ncol(X)
 
-  inf_crit_vec = rep(NA, p_full)
+  inf_crit_vec <- rep(NA, p_full)
 
-  weights_min = vector('list', length = p_full)
+  weights_min <- vector("list", length = p_full)
 
-  for(p in 1:p_full){
-
+  for (p in 1:p_full) {
     X_new <- X[, -p, drop = FALSE]
 
     nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, unif, ...)
@@ -29,14 +27,15 @@ input_importance = function(X, y, q, n_init, inf_crit = 'BIC', unif = 3, ...){
     weights_min[[p]] <- nn$W_opt
 
     inf_crit_vec[p] <- nn$val
-
   }
 
   W_opt <- weights_min[[which.min(inf_crit_vec)]]
 
-  return(list('min' = which.min(inf_crit_vec),
-              'val' = min(inf_crit_vec),
-              'inf_crit_vec' = inf_crit_vec,
-              'weights_min' = weights_min,
-              'W_opt' = W_opt))
+  return(list(
+    "min" = which.min(inf_crit_vec),
+    "val" = min(inf_crit_vec),
+    "inf_crit_vec" = inf_crit_vec,
+    "weights_min" = weights_min,
+    "W_opt" = W_opt
+  ))
 }
