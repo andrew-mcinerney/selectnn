@@ -2,26 +2,25 @@ Package: selectnn
 Title: Statistical-modelling Approach to Neural Network Model Selection
 Version: 0.0.0.9000
 Authors@R: c(
-   person("Andrew",
-           "McInerney",
-           role = c("aut", "cre"),
-           email = "andrew.mcinerney@ul.ie",
+    person("Andrew", "McInerney", , "andrew.mcinerney@ul.ie", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2348-2159")),
-           person("Kevin",
-           "Burke",
-           role = c("aut"),
-           email = "kevin.burke@ul.ie"))
-Description: Provides various functions that allow for a statistical-modelling
-    approach to neural network. Current implementation allows the use of nnet.
+    person("Kevin", "Burke", , "kevin.burke@ul.ie", role = "aut")
+  )
+Description: Provides various functions that allow for a
+    statistical-modelling approach to neural network. Current
+    implementation allows the use of nnet.
 License: GPL (>= 3)
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+URL: https://github.com/andrew-mcinerney/selectnn
+BugReports: https://github.com/andrew-mcinerney/selectnn/issues
 Imports: 
     nnet
 Suggests: 
+    knitr,
+    rmarkdown,
     spelling
-Language: en-US
 Date/Publication: 2022-07-04 10:40:00 UTC
-URL: https://github.com/andrew-mcinerney/selectnn
-BugReports: https://github.com/andrew-mcinerney/selectnn/issues
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+VignetteBuilder: knitr
