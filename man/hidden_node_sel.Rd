@@ -12,6 +12,7 @@ hidden_node_sel(
   type = "bulk",
   inf_crit = "BIC",
   unif = 3,
+  maxit = 1000,
   ...
 )
 }
@@ -30,6 +31,8 @@ hidden_node_sel(
 \code{"AICc"}}
 
 \item{unif}{Random initial values max value}
+
+\item{maxit}{maximum number of iterations for nnet (default = 100)}
 
 \item{...}{additional argument for nnet}
 }

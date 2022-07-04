@@ -4,7 +4,7 @@
 \alias{nn_fit_tracks}
 \title{Fits various tracks (different random starting values) and chooses best model}
 \usage{
-nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
+nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
 }
 \arguments{
 \item{X}{Matrix of covariates}
@@ -19,6 +19,8 @@ nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 \code{"AICc"}}
 
 \item{unif}{Random initial values max value}
+
+\item{maxit}{maximum number of iterations for nnet (default = 100)}
 
 \item{...}{additional argument for nnet}
 }

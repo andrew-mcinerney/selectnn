@@ -4,7 +4,16 @@
 \alias{input_importance}
 \title{Determines the importance of each input}
 \usage{
-input_importance(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
+input_importance(
+  X,
+  y,
+  q,
+  n_init,
+  inf_crit = "BIC",
+  unif = 3,
+  maxit = 1000,
+  ...
+)
 }
 \arguments{
 \item{X}{Matrix of covariates}
@@ -19,6 +28,8 @@ input_importance(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 \code{"AICc"}}
 
 \item{unif}{Random initial values max value}
+
+\item{maxit}{maximum number of iterations for nnet (default = 100)}
 
 \item{...}{additional argument for nnet}
 }

@@ -10,10 +10,12 @@
 #' @param inf_crit Information criterion: `"BIC"` (default), `"AIC"` or
 #'  `"AICc"`
 #' @param unif Random initial values max value
+#' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return The best model from the different tracks
 #' @export
-nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...) {
+nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3,
+                          maxit = 1000, ...) {
   # Function with fits n_init tracks of model and finds best
 
   df <- data.frame(X, y)
@@ -30,8 +32,8 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...) {
 
   for (iter in 1:n_init) {
     nn_model <- nnet::nnet(y ~ .,
-                           data = df, size = q, trace = F, linout = T,
-                           Wts = weight_matrix_init[iter, ], ...
+      data = df, size = q, trace = F, linout = T,
+      Wts = weight_matrix_init[iter, ], maxit = maxit, ...
     )
     weight_matrix[iter, ] <- nn_model$wts
 
@@ -41,14 +43,14 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...) {
     log_likelihood <- (-n / 2) * log(2 * pi * sigma2) - RSS / (2 * sigma2)
 
     inf_crit_vec[iter] <- ifelse(inf_crit == "AIC",
-                                 (2 * (k + 1) - 2 * log_likelihood),
-                                 ifelse(inf_crit == "BIC",
-                                        (log(n) * (k + 1) - 2 * log_likelihood),
-                                        ifelse(inf_crit == "AICc",
-                                               (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
-                                               NA
-                                        )
-                                 )
+      (2 * (k + 1) - 2 * log_likelihood),
+      ifelse(inf_crit == "BIC",
+        (log(n) * (k + 1) - 2 * log_likelihood),
+        ifelse(inf_crit == "AICc",
+          (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
+          NA
+        )
+      )
     )
     converge[iter] <- nn_model$convergence
   }
