@@ -7,13 +7,13 @@
 input_node_sel(X, y, q, n_init, type = "bulk", inf_crit = "BIC", unif = 3, ...)
 }
 \arguments{
-\item{X}{Matrix of covarites}
+\item{X}{Matrix of covariates}
 
 \item{y}{Vector of response}
 
 \item{q}{Number of hidden nodes}
 
-\item{n_init}{Number of random initializations (tracks)}
+\item{n_init}{Number of random initialisations (tracks)}
 
 \item{type}{bulk or step}
 

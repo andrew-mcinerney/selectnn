@@ -16,7 +16,7 @@ hidden_node_sel(
 )
 }
 \arguments{
-\item{X}{Matrix of covarites}
+\item{X}{Matrix of covariates}
 
 \item{y}{Vector of response}
 

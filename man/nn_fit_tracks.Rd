@@ -7,7 +7,7 @@
 nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, ...)
 }
 \arguments{
-\item{X}{Matrix of covarites}
+\item{X}{Matrix of covariates}
 
 \item{y}{Vector of response}
 
