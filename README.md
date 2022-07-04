@@ -9,7 +9,8 @@
 <!-- badges: end -->
 
 The goal of selectnn is to determine the optimal architecture when
-implementing neural networks as a statistical model.
+implementing neural networks as a statistical model. The function used
+to fit neural networks is `nnet` (Venables and Ripley, 2002).
 
 ## Installation
 
@@ -19,4 +20,13 @@ You can install the development version of selectnn from
 ``` r
 # install.packages("devtools")
 devtools::install_github("andrew-mcinerney/selectnn")
+```
+
+## nn_model_sel()
+
+This function is used to perform neural network model selection.
+
+``` r
+library(selectnn)
+nn_model_sel(X, y, Q, n_init)
 ```
