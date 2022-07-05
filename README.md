@@ -24,9 +24,11 @@ You can install the development version of selectnn from
 devtools::install_github("andrew-mcinerney/selectnn")
 ```
 
-## nn_model_sel()
+## Model Selection
 
-This function is used to perform neural network model selection.
+The primary function in this package is `nn_model_sel()`. It is used to
+perform neural network model selection. The approach is detailed in
+McInerney and Burke (2022).
 
 ``` r
 library(selectnn)
