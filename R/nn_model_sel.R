@@ -31,11 +31,23 @@ nn_model_sel <- function(...) UseMethod("nn_model_sel")
 #' @export
 nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
                                  maxit = 1000, ...) {
-  continue <- 1
+
+  if (any(is.na(X)) | any(is.na(y))) {
+    stop("Error: Make sure data does not contain any NAs.")
+  }
+
+  if (!(inf_crit %in% c("BIC", "AIC", "AICc"))) {
+    stop(sprintf(
+      "Error: %s not recognised as information criterion.
+      Please choose from AIC, AICc or BIC.", inf_crit))
+  }
+
 
   if(is.null(colnames(X))){
     colnames(X) <- colnames(X, do.NULL = FALSE, prefix = deparse(substitute(X)))
   }
+
+  continue <- 1
 
   hidden_size <- c()
 
@@ -141,6 +153,7 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
     "hidden_size" = hidden_size
   ))
 }
+
 #' @rdname nn_model_sel
 #' @param formula A formula of the form: response ~ x1 + x2 + ...
 #' @param data Data frame from which variables specified in formula are to be
