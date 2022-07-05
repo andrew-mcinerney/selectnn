@@ -29,4 +29,5 @@ This function is used to perform neural network model selection.
 ``` r
 library(selectnn)
 nn_model_sel(X, y, Q, n_init)
+nn_model_sel(y ~ ., data = df, Q, n_init)
 ```

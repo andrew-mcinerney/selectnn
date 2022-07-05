@@ -2,11 +2,19 @@
 % Please edit documentation in R/nn_model_sel.R
 \name{nn_model_sel}
 \alias{nn_model_sel}
-\title{Full model selection (input and hidden layer)}
+\alias{nn_model_sel.default}
+\alias{nn_model_sel.formula}
+\title{Neural network model selection}
 \usage{
-nn_model_sel(X, y, Q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
+nn_model_sel(...)
+
+\method{nn_model_sel}{default}(X, y, Q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
+
+\method{nn_model_sel}{formula}(formula, data, ...)
 }
 \arguments{
+\item{...}{arguments passed to or from other methods}
+
 \item{X}{Matrix of covariates}
 
 \item{y}{Vector of response}
@@ -22,11 +30,24 @@ nn_model_sel(X, y, Q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
 
 \item{maxit}{maximum number of iterations for nnet (default = 100)}
 
-\item{...}{additional argument for nnet}
+\item{formula}{A formula of the form: response ~ x1 + x2 + ...}
+
+\item{data}{Data frame from which variables specified in formula are to be
+taken}
 }
 \value{
-Optimal number of hidden nodes
+A list with information of the optimal model.
+\itemize{
+\item \code{nn_hidden} - list of hidden node selection results.
+\item \code{nn_input} - list of input node selection results.
+\item \code{n_rep_h} - number of hidden node selection steps.
+\item \code{n_rep_i} - number of input node selection steps.
+\item \code{X} - matrix of the important covariates found.
+\item \code{X_full} - matrix of all covariates.
+\item \code{dropped} - vector of unimportant covariates.
+\item \code{hidden_size} - vector of hidden layer size found at each step.
+}
 }
 \description{
-Performs model selection procedure.
+Performs both input and hidden layer selection for neural networks.
 }

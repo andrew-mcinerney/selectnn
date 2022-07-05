@@ -1,8 +1,24 @@
 
-#' Full model selection (input and hidden layer)
+#' Neural network model selection
 #'
-#' Performs model selection procedure.
+#' Performs both input and hidden layer selection for neural networks.
 #'
+#' @return A list with information of the optimal model.
+#' \itemize{
+#'   \item \code{nn_hidden} - list of hidden node selection results.
+#'   \item \code{nn_input} - list of input node selection results.
+#'   \item \code{n_rep_h} - number of hidden node selection steps.
+#'   \item \code{n_rep_i} - number of input node selection steps.
+#'   \item \code{X} - matrix of the important covariates found.
+#'   \item \code{X_full} - matrix of all covariates.
+#'   \item \code{dropped} - vector of unimportant covariates.
+#'   \item \code{hidden_size} - vector of hidden layer size found at each step.
+#'   }
+#'
+#' @export
+nn_model_sel <- function(...) UseMethod("nn_model_sel")
+
+#' @rdname nn_model_sel
 #' @param X Matrix of covariates
 #' @param y Vector of response
 #' @param Q Candidate number of hidden nodes
@@ -11,11 +27,10 @@
 #'  `"AICc"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
-#' @param ... additional argument for nnet
-#' @return Optimal number of hidden nodes
+#' @param ... arguments passed to or from other methods
 #' @export
-nn_model_sel <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
-                         maxit = 1000, ...) {
+nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
+                                 maxit = 1000, ...) {
   continue <- 1
 
   hidden_size <- c()
@@ -121,4 +136,19 @@ nn_model_sel <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
     "dropped" = dropped,
     "hidden_size" = hidden_size
   ))
+}
+#' @rdname nn_model_sel
+#' @param formula A formula of the form: response ~ x1 + x2 + ...
+#' @param data Data frame from which variables specified in formula are to be
+#'   taken
+#' @export
+nn_model_sel.formula <- function(formula, data, ...) {
+  mf <- stats::model.frame(formula, data = data)
+
+  y <- as.numeric(stats::model.response(mf))
+  X <- stats::model.matrix(formula, data = data)[, -1]
+
+  nn <- nn_model_sel.default(X, y, ...)
+
+  return(nn)
 }
