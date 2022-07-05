@@ -4,7 +4,7 @@
 \alias{nn_pred}
 \title{Neural network prediction}
 \usage{
-nn_pred(X, W, q)
+nn_pred(X, W, q, output = "identity")
 }
 \arguments{
 \item{X}{Data}
@@ -12,6 +12,9 @@ nn_pred(X, W, q)
 \item{W}{Weight vector}
 
 \item{q}{Number of hidden nodes}
+
+\item{output}{Activation function for output unit: \code{"identity"} (default) or
+\code{"sigmoid"}}
 }
 \value{
 Prediction for given inputs
