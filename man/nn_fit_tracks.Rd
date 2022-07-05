@@ -4,7 +4,17 @@
 \alias{nn_fit_tracks}
 \title{Fits various tracks (different random starting values) and chooses best model}
 \usage{
-nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
+nn_fit_tracks(
+  X,
+  y,
+  q,
+  n_init,
+  inf_crit = "BIC",
+  task = "regression",
+  unif = 3,
+  maxit = 1000,
+  ...
+)
 }
 \arguments{
 \item{X}{Matrix of covariates}
@@ -17,6 +27,8 @@ nn_fit_tracks(X, y, q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
 
 \item{inf_crit}{Information criterion: \code{"BIC"} (default), \code{"AIC"} or
 \code{"AICc"}}
+
+\item{task}{\code{"regression"} (default) or \code{"classification"}}
 
 \item{unif}{Random initial values max value}
 
