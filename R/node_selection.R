@@ -9,13 +9,14 @@
 #' @param type Selection type: `"bulk"` (the default) or `"step"`
 #' @param inf_crit Information criterion: `"BIC"` (default), `"AIC"` or
 #'  `"AICc"`
+#' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return Optimal number of hidden nodes
 #' @export
-hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC", unif = 3,
-                            maxit = 1000, ...) {
+hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
+                            task = "regression", unif = 3, maxit = 1000, ...) {
   if (type == "bulk") {
     inf_crit_vec <- rep(NA, Q)
 
@@ -24,7 +25,8 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC", un
     weights_min <- vector("list", length = Q)
 
     for (q in 1:Q) {
-      nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, unif, maxit = maxit, ...)
+      nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
+                          maxit = maxit, ...)
 
       weights_min[[q]] <- nn$W_opt
 
@@ -55,7 +57,8 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC", un
         k <- (p + 1) * q + (q + 1)
 
 
-        nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, unif, maxit = maxit, ...)
+        nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
+                            maxit = maxit, ...)
 
         weights_min[[as.character(q)]] <- nn$W_opt
 
@@ -87,14 +90,17 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC", un
 #' @param type Selection type: `"bulk"` (the default) or `"step"`
 #' @param inf_crit Information criterion: `"BIC"` (default), `"AIC"` or
 #'  `"AICc"`
+#' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return Inputs dropped from model
 #' @export
-input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC", unif = 3,
-                           maxit = 1000, ...) {
-  full_model <- nn_fit_tracks(X, y, q, n_init, inf_crit, unif, maxit = maxit, ...)
+input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
+                           task = "regression", unif = 3, maxit = 1000, ...) {
+
+  full_model <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
+                              maxit = maxit, ...)
 
   full_inf_crit <- full_model$val
 
@@ -117,7 +123,7 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC", uni
   while (continue_drop == TRUE) {
     nn_in <- input_importance(
       X = X, y = y, q = q, n_init = n_init,
-      inf_crit = inf_crit, unif = unif, maxit = maxit,
+      inf_crit = inf_crit, task = task, unif = unif, maxit = maxit,
       ...
     )
 
@@ -159,13 +165,14 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC", uni
 #' @param n_init Number of random initialisations (tracks)
 #' @param inf_crit Information criterion: `"BIC"` (default), `"AIC"` or
 #'  `"AICc"`
+#' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return The least important input node
 #' @export
-input_importance <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3,
-                             maxit = 1000, ...) {
+input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
+                             task = "regression", unif = 3, maxit = 1000, ...) {
   p_full <- ncol(X)
 
   inf_crit_vec <- rep(NA, p_full)
@@ -175,7 +182,8 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC", unif = 3,
   for (p in 1:p_full) {
     X_new <- X[, -p, drop = FALSE]
 
-    nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, unif, maxit = maxit, ...)
+    nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
+                        maxit = maxit, ...)
 
     weights_min[[p]] <- nn$W_opt
 

@@ -10,6 +10,7 @@ input_importance(
   q,
   n_init,
   inf_crit = "BIC",
+  task = "regression",
   unif = 3,
   maxit = 1000,
   ...
@@ -26,6 +27,8 @@ input_importance(
 
 \item{inf_crit}{Information criterion: \code{"BIC"} (default), \code{"AIC"} or
 \code{"AICc"}}
+
+\item{task}{\code{"regression"} (default) or \code{"classification"}}
 
 \item{unif}{Random initial values max value}
 
