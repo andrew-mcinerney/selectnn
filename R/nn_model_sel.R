@@ -33,6 +33,10 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
                                  maxit = 1000, ...) {
   continue <- 1
 
+  if(is.null(colnames(X))){
+    colnames(X) <- colnames(X, do.NULL = FALSE, prefix = deparse(substitute(X)))
+  }
+
   hidden_size <- c()
 
   n_rep_h <- 1
@@ -147,6 +151,8 @@ nn_model_sel.formula <- function(formula, data, ...) {
 
   y <- as.numeric(stats::model.response(mf))
   X <- stats::model.matrix(formula, data = data)[, -1]
+
+  rownames(X) <- NULL
 
   nn <- nn_model_sel.default(X, y, ...)
 
