@@ -51,6 +51,8 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     ))
   }
 
+  cl <- match.call()
+
 
   if (is.null(colnames(X))) {
     colnames(X) <- colnames(X, do.NULL = FALSE, prefix = deparse(substitute(X)))
@@ -154,8 +156,12 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     }
   }
 
+  p <- ncol(X_new)
+  q <- hidden_size[n_rep_h]
+  p_init <- ncol(X)
+  q_init <- Q
 
-  return(list(
+  net <- list(
     "nn_hidden" = nn_hidden,
     "nn_input" = nn_input,
     "n_rep_h" = n_rep_h,
@@ -163,8 +169,18 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     "X" = X_new,
     "X_full" = X,
     "dropped" = dropped,
-    "hidden_size" = hidden_size
-  ))
+    "hidden_size" = hidden_size,
+    "p" = p,
+    "p_init" = p_init,
+    "q" = q,
+    "q_init" = q_init,
+    "call" = cl
+  )
+
+  class(net) <- "nn_model_sel"
+
+
+  return(net)
 }
 
 #' @rdname nn_model_sel
@@ -173,6 +189,9 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
 #'   taken
 #' @export
 nn_model_sel.formula <- function(formula, data, ...) {
+
+  cl <- match.call()
+
   mf <- stats::model.frame(formula, data = data)
 
   y <- as.numeric(stats::model.response(mf))
@@ -182,5 +201,20 @@ nn_model_sel.formula <- function(formula, data, ...) {
 
   nn <- nn_model_sel.default(X, y, ...)
 
+  nn$call <- cl
+
   return(nn)
+}
+
+
+#' @export
+print.nn_model_sel <- function(x, ...) {
+  cat("Call:\n")
+  print(x$call)
+  cat("Model Selected: ", x$p, "-", x$q, "-", "1", " network",
+      sep="")
+  cat(" with", (x$p + 2) * x$q + 1,"weights\n")
+  cat("Initial Model: ", x$p_init, "-", x$q_init, "-", "1", " network",
+      sep="")
+  cat(" with", (x$p_init + 2) * x$q_init + 1,"weights\n")
 }
