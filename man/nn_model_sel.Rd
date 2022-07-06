@@ -8,7 +8,17 @@
 \usage{
 nn_model_sel(...)
 
-\method{nn_model_sel}{default}(X, y, Q, n_init, inf_crit = "BIC", unif = 3, maxit = 1000, ...)
+\method{nn_model_sel}{default}(
+  X,
+  y,
+  Q,
+  n_init,
+  inf_crit = "BIC",
+  task = "regression",
+  unif = 3,
+  maxit = 1000,
+  ...
+)
 
 \method{nn_model_sel}{formula}(formula, data, ...)
 }
@@ -25,6 +35,8 @@ nn_model_sel(...)
 
 \item{inf_crit}{Information criterion: \code{"BIC"} (default), \code{"AIC"} or
 \code{"AICc"}}
+
+\item{task}{\code{"regression"} (default) or \code{"classification"}}
 
 \item{unif}{Random initial values max value}
 
