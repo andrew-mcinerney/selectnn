@@ -2,6 +2,7 @@
 
 S3method(nn_model_sel,default)
 S3method(nn_model_sel,formula)
+S3method(print,nn_model_sel)
 export(hidden_node_sel)
 export(input_importance)
 export(input_node_sel)
