@@ -37,13 +37,18 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
   } else if (task == "classification") {
     linout <- FALSE
     entropy <- TRUE
+  } else {
+    stop(sprintf(
+      "Error: %s not recognised as task. Please choose regression or classification",
+      task
+    ))
   }
 
   for (iter in 1:n_init) {
     nn_model <- nnet::nnet(y ~ .,
-                           data = df, size = q, trace = FALSE,
-                           linout = linout, entropy = entropy,
-                           Wts = weight_matrix_init[iter, ], maxit = maxit, ...
+      data = df, size = q, trace = FALSE,
+      linout = linout, entropy = entropy,
+      Wts = weight_matrix_init[iter, ], maxit = maxit, ...
     )
 
     weight_matrix[iter, ] <- nn_model$wts
@@ -58,14 +63,14 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
     }
 
     inf_crit_vec[iter] <- ifelse(inf_crit == "AIC",
-                                 (2 * (k + 1) - 2 * log_likelihood),
-                                 ifelse(inf_crit == "BIC",
-                                        (log(n) * (k + 1) - 2 * log_likelihood),
-                                        ifelse(inf_crit == "AICc",
-                                               (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
-                                               NA
-                                        )
-                                 )
+      (2 * (k + 1) - 2 * log_likelihood),
+      ifelse(inf_crit == "BIC",
+        (log(n) * (k + 1) - 2 * log_likelihood),
+        ifelse(inf_crit == "AICc",
+          (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
+          NA
+        )
+      )
     )
     converge[iter] <- nn_model$convergence
   }
@@ -91,7 +96,7 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
 #'  `"sigmoid"`
 #' @return Prediction for given inputs
 #' @export
-nn_pred <- function(X, W, q, output = 'identity') {
+nn_pred <- function(X, W, q, output = "identity") {
   n <- nrow(X)
   p <- ncol(X)
 
@@ -104,22 +109,26 @@ nn_pred <- function(X, W, q, output = 'identity') {
 
     h_act <- cbind(rep(1, n), sigmoid(h_input))
 
-    if (output == 'identity') {
+    if (output == "identity") {
       y_hat <- h_act %*% matrix(W[c((length(W) - q):length(W))], ncol = 1)
-    } else if (output == 'sigmoid') {
+    } else if (output == "sigmoid") {
       y_hat <- sigmoid(
         h_act %*% matrix(W[c((length(W) - q):length(W))], ncol = 1)
       )
     } else {
       stop(
-        sprintf("Error: %s not recognised as available output function.",
-                output))
+        sprintf(
+          "Error: %s not recognised as available output function.",
+          output
+        )
+      )
     }
 
     return(y_hat)
   } else {
     stop(sprintf(
       "Error: Incorrect number of weights for NN structure. W should have
-      %s weights (%s weights supplied).", k, length(W)))
+      %s weights (%s weights supplied).", k, length(W)
+    ))
   }
 }
