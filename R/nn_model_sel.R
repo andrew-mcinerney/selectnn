@@ -25,13 +25,14 @@ nn_model_sel <- function(...) UseMethod("nn_model_sel")
 #' @param n_init Number of random initialisations (tracks)`
 #' @param inf_crit Information criterion: `"BIC"` (default), `"AIC"` or
 #'  `"AICc"`
+#' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... arguments passed to or from other methods
 #' @export
-nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
-                                 maxit = 1000, ...) {
-
+nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
+                                 task = "regression", unif = 3, maxit = 1000,
+                                 ...) {
   if (any(is.na(X)) | any(is.na(y))) {
     stop("Error: Make sure data does not contain any NAs.")
   }
@@ -39,11 +40,19 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
   if (!(inf_crit %in% c("BIC", "AIC", "AICc"))) {
     stop(sprintf(
       "Error: %s not recognised as information criterion.
-      Please choose from AIC, AICc or BIC.", inf_crit))
+      Please choose from AIC, AICc or BIC.", inf_crit
+    ))
+  }
+
+  if (!(task %in% c("regression", "classification"))) {
+    stop(sprintf(
+      "Error: %s not recognised as task. Please choose from regression or classification.",
+      task
+    ))
   }
 
 
-  if(is.null(colnames(X))){
+  if (is.null(colnames(X))) {
     colnames(X) <- colnames(X, do.NULL = FALSE, prefix = deparse(substitute(X)))
   }
 
@@ -66,6 +75,7 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
     n_init = n_init,
     type = "bulk",
     inf_crit = inf_crit,
+    task = task,
     unif = unif,
     maxit = maxit,
     ...
@@ -80,6 +90,7 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
     n_init = n_init,
     type = "bulk",
     inf_crit = inf_crit,
+    task = task,
     unif = unif,
     maxit = maxit,
     ...
@@ -102,6 +113,7 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
       n_init = n_init,
       type = "step",
       inf_crit = inf_crit,
+      task = task,
       unif = unif,
       maxit = maxit,
       ...
@@ -121,6 +133,7 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC", unif = 3,
         n_init = n_init,
         type = "step",
         inf_crit = inf_crit,
+        task = task,
         unif = unif,
         maxit = maxit,
         ...
