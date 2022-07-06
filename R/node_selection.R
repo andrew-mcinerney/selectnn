@@ -26,7 +26,8 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 
     for (q in 1:Q) {
       nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
-                          maxit = maxit, ...)
+        maxit = maxit, ...
+      )
 
       weights_min[[q]] <- nn$W_opt
 
@@ -58,7 +59,8 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 
 
         nn <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
-                            maxit = maxit, ...)
+          maxit = maxit, ...
+        )
 
         weights_min[[as.character(q)]] <- nn$W_opt
 
@@ -98,9 +100,9 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 #' @export
 input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
                            task = "regression", unif = 3, maxit = 1000, ...) {
-
   full_model <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
-                              maxit = maxit, ...)
+    maxit = maxit, ...
+  )
 
   full_inf_crit <- full_model$val
 
@@ -183,7 +185,8 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
     X_new <- X[, -p, drop = FALSE]
 
     nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
-                        maxit = maxit, ...)
+      maxit = maxit, ...
+    )
 
     weights_min[[p]] <- nn$W_opt
 
