@@ -16,9 +16,9 @@
 #'   }
 #'
 #' @export
-nn_model_sel <- function(...) UseMethod("nn_model_sel")
+nn_select <- function(...) UseMethod("nn_select")
 
-#' @rdname nn_model_sel
+#' @rdname nn_select
 #' @param X Matrix of covariates
 #' @param y Vector of response
 #' @param Q Candidate number of hidden nodes
@@ -30,7 +30,7 @@ nn_model_sel <- function(...) UseMethod("nn_model_sel")
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... arguments passed to or from other methods
 #' @export
-nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
+nn_select.default <- function(X, y, Q, n_init, inf_crit = "BIC",
                                  task = "regression", unif = 3, maxit = 1000,
                                  ...) {
   if (any(is.na(X)) | any(is.na(y))) {
@@ -177,18 +177,18 @@ nn_model_sel.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     "call" = cl
   )
 
-  class(net) <- "nn_model_sel"
+  class(net) <- "nn_select"
 
 
   return(net)
 }
 
-#' @rdname nn_model_sel
+#' @rdname nn_select
 #' @param formula A formula of the form: response ~ x1 + x2 + ...
 #' @param data Data frame from which variables specified in formula are to be
 #'   taken
 #' @export
-nn_model_sel.formula <- function(formula, data, ...) {
+nn_select.formula <- function(formula, data, ...) {
 
   cl <- match.call()
 
@@ -199,7 +199,7 @@ nn_model_sel.formula <- function(formula, data, ...) {
 
   rownames(X) <- NULL
 
-  nn <- nn_model_sel.default(X, y, ...)
+  nn <- nn_select.default(X, y, ...)
 
   nn$call <- cl
 
@@ -208,7 +208,7 @@ nn_model_sel.formula <- function(formula, data, ...) {
 
 
 #' @export
-print.nn_model_sel <- function(x, ...) {
+print.nn_select <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("Model Selected: ", x$p, "-", x$q, "-", "1", " network",

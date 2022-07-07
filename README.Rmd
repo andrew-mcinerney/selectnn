@@ -40,12 +40,12 @@ devtools::install_github("andrew-mcinerney/selectnn")
 
 ## Model Selection
 
-The primary function in this package is `nn_model_sel()`.
+The primary function in this package is `nn_select()`.
 It is used to perform neural network model selection.
 The approach is detailed in McInerney and Burke (2022).
 
 ```{r, eval = FALSE}
 library(selectnn)
-nn_model_sel(X, y, Q, n_init)
-nn_model_sel(y ~ ., data = df, Q, n_init)
+nn_select(X, y, Q, n_init)
+nn_select(y ~ ., data = df, Q, n_init)
 ```
