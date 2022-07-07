@@ -12,7 +12,7 @@
 
 The goal of selectnn is to determine the optimal architecture when
 implementing neural networks as a statistical model. The function used
-to fit neural networks is `nnet` (Venables and Ripley, 2002).
+to fit neural networks is `nnet` (Ripley and Venables, 2016).
 
 ## Installation
 
