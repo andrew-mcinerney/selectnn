@@ -28,7 +28,8 @@ devtools::install_github("andrew-mcinerney/selectnn")
 
 The primary function in this package is `selectnn()`. It is used to
 perform neural network model selection. The approach is detailed in
-McInerney and Burke (2022).
+McInerney and Burke (2022): “A Statistically-Based Approach to
+Feedforward Neural Network Model Selection”.
 
 ``` r
 library(selectnn)
