@@ -241,7 +241,7 @@ coef.selectnn <- function(object, ...) {
   wm <- c("b",
           paste(colnames(object$X), sep=""),
           paste("h", seq_len(q), sep=""),
-          as.character(nn_mod$call$y)
+          as.character(object$call$y)
   )
 
   conn <- c(rep(0:p, times = q), 0, (p + 1):(p + q))
