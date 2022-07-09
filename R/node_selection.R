@@ -31,7 +31,7 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 
       weights_min[[q]] <- nn$W_opt
 
-      inf_crit_vec[q] <- nn$val
+      inf_crit_vec[q] <- nn$value
     }
 
     W_opt <- weights_min[[which.min(inf_crit_vec)]]
@@ -64,7 +64,7 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 
         weights_min[[as.character(q)]] <- nn$W_opt
 
-        inf_crit_vec[as.character(q)] <- nn$val
+        inf_crit_vec[as.character(q)] <- nn$value
       }
     }
 
@@ -73,7 +73,7 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 
   return(list(
     "min" = as.numeric(names(which.min(inf_crit_vec))),
-    "val" = min(inf_crit_vec, na.rm = TRUE),
+    "value" = min(inf_crit_vec, na.rm = TRUE),
     "inf_crit_vec" = inf_crit_vec,
     "weights_min" = weights_min,
     "W_opt" = W_opt
@@ -104,7 +104,7 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
     maxit = maxit, ...
   )
 
-  full_inf_crit <- full_model$val
+  full_inf_crit <- full_model$value
 
   p <- ncol(X)
 
@@ -129,7 +129,7 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
       ...
     )
 
-    if (nn_in$val < min_inf_crit) {
+    if (nn_in$value < min_inf_crit) {
       X <- X[, -nn_in$min, drop = FALSE]
       p <- ncol(as.matrix(X))
 
@@ -137,7 +137,7 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
       W_opt <- nn_in$W_opt
 
       dropped <- colnames(X_full)[!colnames(X_full) %in% colnames(X)]
-      min_inf_crit <- nn_in$val
+      min_inf_crit <- nn_in$value
 
       if (ncol(X) == 1) {
         continue_drop <- FALSE
@@ -152,7 +152,7 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
   }
   return(list(
     "X" = X, "p" = p, "W_opt" = W_opt, "dropped" = dropped,
-    "full_inf_crit" = full_inf_crit, "inf_crit" = min_inf_crit
+    "full_value" = full_inf_crit, "value" = min_inf_crit
   ))
 }
 
@@ -190,14 +190,14 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
 
     weights_min[[p]] <- nn$W_opt
 
-    inf_crit_vec[p] <- nn$val
+    inf_crit_vec[p] <- nn$value
   }
 
   W_opt <- weights_min[[which.min(inf_crit_vec)]]
 
   return(list(
     "min" = which.min(inf_crit_vec),
-    "val" = min(inf_crit_vec),
+    "value" = min(inf_crit_vec),
     "inf_crit_vec" = inf_crit_vec,
     "weights_min" = weights_min,
     "W_opt" = W_opt

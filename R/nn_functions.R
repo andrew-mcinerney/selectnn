@@ -78,7 +78,7 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
 
   return(list(
     "W_opt" = W_opt,
-    "val" = min(inf_crit_vec),
+    "value" = min(inf_crit_vec),
     "inf_crit_vec" = inf_crit_vec,
     "converge" = converge,
     "weight_matrix" = weight_matrix
