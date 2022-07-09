@@ -5,6 +5,8 @@
 #'
 #' @return A list with information of the optimal model.
 #' \itemize{
+#'   \item \code{W_opt} - vector of selected weights.
+#'   \item \code{value} - value of `"inf_crit"` for selected model.
 #'   \item \code{nn_hidden} - list of hidden node selection results.
 #'   \item \code{nn_input} - list of input node selection results.
 #'   \item \code{n_rep_h} - number of hidden node selection steps.
@@ -31,8 +33,8 @@ selectnn <- function(...) UseMethod("selectnn")
 #' @param ... arguments passed to or from other methods
 #' @export
 selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
-                                 task = "regression", unif = 3, maxit = 1000,
-                                 ...) {
+                             task = "regression", unif = 3, maxit = 1000,
+                             ...) {
   if (any(is.na(X)) | any(is.na(y))) {
     stop("Error: Make sure data does not contain any NAs.")
   }
@@ -161,7 +163,17 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
   p_init <- ncol(X)
   q_init <- Q
 
+  if (n_rep_h > n_rep_i) {
+    W_opt <- nn_hidden[[n_rep_h]]$W_opt
+    value <- nn_hidden[[n_rep_h]]$value
+  } else {
+    W_opt <- nn_input[[n_rep_i]]$W_opt
+    value <- nn_input[[n_rep_i]]$value
+  }
+
   net <- list(
+    "W_opt" = W_opt,
+    "value" = value,
     "nn_hidden" = nn_hidden,
     "nn_input" = nn_input,
     "n_rep_h" = n_rep_h,
@@ -211,10 +223,71 @@ selectnn.formula <- function(formula, data, ...) {
 print.selectnn <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
+  cat("\n")
   cat("Model Selected: ", x$p, "-", x$q, "-", "1", " network",
       sep="")
   cat(" with", (x$p + 2) * x$q + 1,"weights\n")
   cat("Initial Model: ", x$p_init, "-", x$q_init, "-", "1", " network",
       sep="")
   cat(" with", (x$p_init + 2) * x$q_init + 1,"weights\n")
+}
+
+#' @export
+coef.selectnn <- function(object, ...) {
+  wts <- object$W_opt
+  p <- object$p
+  q <- object$q
+
+  wm <- c("b",
+          paste(colnames(object$X), sep=""),
+          paste("h", seq_len(q), sep=""),
+          as.character(nn_mod$call$y)
+  )
+
+  conn <- c(rep(0:p, times = q), 0, (p + 1):(p + q))
+
+  nunits <- p + q + 2
+
+  nconn <- c(rep(0, times = p + 2),
+             seq(p + 1, q * (p + 1), by = (p + 1)),
+             q * (p + 2) + 1)
+
+  names(wts) <- apply(cbind(wm[1 + conn],
+                            wm[1 + rep(1:nunits - 1, diff(nconn))]),
+                      1,
+                      function(x)  paste(x, collapse = "->"))
+  return(wts)
+}
+
+#' @export
+summary.selectnn <- function(object, ...)
+{
+  p <- object$p
+  q <- object$q
+
+  nconn <- c(rep(0, times = p + 2),
+             seq(p + 1, q * (p + 1), by = (p + 1)),
+             q * (p + 2) + 1)
+
+  object$nconn <- nconn
+
+  class(object) <- c("summary.selectnn", class(object))
+  return(object)
+}
+
+#' @export
+print.summary.selectnn <- function(x, ...)
+{
+  cat("Call:\n")
+  print(x$call)
+  cat("\n")
+  cat("Number of input nodes:", x$p, "\n")
+  cat("Number of hidden nodes:", x$q, "\n")
+  cat("\n")
+  cat("Value:", x$val, "\n")
+  cat("\n")
+  cat("Weights:\n")
+  wts <- format(round(coef.selectnn(x), 2))
+  lapply(split(wts, rep(1:(x$p + x$q + 2), diff(x$nconn))),
+         function(x) print(x, quote=FALSE))
 }
