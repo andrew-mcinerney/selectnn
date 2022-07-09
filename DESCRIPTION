@@ -1,5 +1,5 @@
 Package: selectnn
-Title: Statistical-modelling Approach to Neural Network Model Selection
+Title: A Statistically-Based Approach to Neural Network Model Selection
 Version: 0.0.0.9000
 Authors@R: c(
     person("Andrew", "McInerney", , "andrew.mcinerney@ul.ie", role = c("aut", "cre"),
