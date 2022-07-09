@@ -50,6 +50,8 @@ taken}
 \value{
 A list with information of the optimal model.
 \itemize{
+\item \code{W_opt} - vector of selected weights.
+\item \code{value} - value of \code{"inf_crit"} for selected model.
 \item \code{nn_hidden} - list of hidden node selection results.
 \item \code{nn_input} - list of input node selection results.
 \item \code{n_rep_h} - number of hidden node selection steps.
