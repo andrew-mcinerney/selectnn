@@ -10,9 +10,14 @@
 [![R-CMD-check](https://github.com/andrew-mcinerney/selectnn/workflows/R-CMD-check/badge.svg)](https://github.com/andrew-mcinerney/selectnn/actions)
 <!-- badges: end -->
 
-The goal of selectnn is to determine the optimal architecture when
-implementing neural networks as a statistical model. The function used
-to fit neural networks is `nnet` (Ripley and Venables, 2016).
+This package implements the model selection approach detailed in
+McInerney and Burke (2022): “A Statistically-Based Approach to
+Feedforward Neural Network Model Selection”. The preprint of this paper
+is available on [arXiv](https://arxiv.org/abs/2207.04248). More
+specifically, the algorithm alternates between selecting the hidden
+layer complexity and the inputs with the objective of minimizing the
+BIC. The neural network function used is `nnet`, which is available from
+the R package of the same name (Ripley and Venables, 2022).
 
 ## Installation
 
@@ -26,10 +31,7 @@ devtools::install_github("andrew-mcinerney/selectnn")
 
 ## Model Selection
 
-The primary function in this package is `selectnn()`. It is used to
-perform neural network model selection. The approach is detailed in
-McInerney and Burke (2022): “A Statistically-Based Approach to
-Feedforward Neural Network Model Selection”.
+The primary function in this package is `selectnn()`.
 
 ``` r
 library(selectnn)
