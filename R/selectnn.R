@@ -101,8 +101,8 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
   )
 
   if (!is.null(nn_input[[1]]$dropped)) {
-    X_new <- X[, -as.numeric(nn_input[[1]]$dropped), drop = FALSE]
-    dropped <- colnames(X)[as.numeric(nn_input[[1]]$dropped)]
+    X_new <- X[, !colnames(X) %in% nn_input[[1]]$dropped, drop = FALSE]
+    dropped <- nn_input[[1]]$dropped
   } else {
     X_new <- X
     dropped <- c()
@@ -139,6 +139,7 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
         inf_crit = inf_crit,
         task = task,
         unif = unif,
+        X_full = X,
         maxit = maxit,
         ...
       )
@@ -146,8 +147,8 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
       n_rep_i <- n_rep_i + 1
 
       if (!is.null(nn_input[[n_rep_i]]$dropped) & ncol(X_new) > 1) {
-        dropped <- c(dropped, colnames(X_new)[as.numeric(nn_input[[n_rep_i]]$dropped)])
-        X_new <- X_new[, -as.numeric(nn_input[[n_rep_i]]$dropped)]
+        dropped <- c(dropped, nn_input[[n_rep_i]]$dropped)
+        X_new <- X[, !colnames(X) %in% nn_input[[n_rep_i]]$dropped, drop = FALSE]
       } else {
         continue <- 0
       }
@@ -171,6 +172,8 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     value <- nn_input[[n_rep_i]]$value
   }
 
+  delta_bic <- nn_input[[n_rep_i]]$delta_bic
+
   net <- list(
     "W_opt" = W_opt,
     "value" = value,
@@ -186,6 +189,7 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     "p_init" = p_init,
     "q" = q,
     "q_init" = q_init,
+    "delta_bic" = delta_bic,
     "call" = cl
   )
 
@@ -201,7 +205,6 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
 #'   taken
 #' @export
 selectnn.formula <- function(formula, data, ...) {
-
   cl <- match.call()
 
   mf <- stats::model.frame(formula, data = data)
@@ -225,11 +228,13 @@ print.selectnn <- function(x, ...) {
   print(x$call)
   cat("\n")
   cat("Model Selected: ", x$p, "-", x$q, "-", "1", " network",
-      sep="")
-  cat(" with", (x$p + 2) * x$q + 1,"weights\n")
+    sep = ""
+  )
+  cat(" with", (x$p + 2) * x$q + 1, "weights\n")
   cat("Initial Model: ", x$p_init, "-", x$q_init, "-", "1", " network",
-      sep="")
-  cat(" with", (x$p_init + 2) * x$q_init + 1,"weights\n")
+    sep = ""
+  )
+  cat(" with", (x$p_init + 2) * x$q_init + 1, "weights\n")
 }
 
 #' @export
@@ -238,36 +243,44 @@ coef.selectnn <- function(object, ...) {
   p <- object$p
   q <- object$q
 
-  wm <- c("b",
-          paste(colnames(object$X), sep=""),
-          paste("h", seq_len(q), sep=""),
-          as.character(object$call$y)
+  wm <- c(
+    "b",
+    paste(colnames(object$X), sep = ""),
+    paste("h", seq_len(q), sep = ""),
+    as.character(object$call$y)
   )
 
   conn <- c(rep(0:p, times = q), 0, (p + 1):(p + q))
 
   nunits <- p + q + 2
 
-  nconn <- c(rep(0, times = p + 2),
-             seq(p + 1, q * (p + 1), by = (p + 1)),
-             q * (p + 2) + 1)
+  nconn <- c(
+    rep(0, times = p + 2),
+    seq(p + 1, q * (p + 1), by = (p + 1)),
+    q * (p + 2) + 1
+  )
 
-  names(wts) <- apply(cbind(wm[1 + conn],
-                            wm[1 + rep(1:nunits - 1, diff(nconn))]),
-                      1,
-                      function(x)  paste(x, collapse = "->"))
+  names(wts) <- apply(
+    cbind(
+      wm[1 + conn],
+      wm[1 + rep(1:nunits - 1, diff(nconn))]
+    ),
+    1,
+    function(x) paste(x, collapse = "->")
+  )
   return(wts)
 }
 
 #' @export
-summary.selectnn <- function(object, ...)
-{
+summary.selectnn <- function(object, ...) {
   p <- object$p
   q <- object$q
 
-  nconn <- c(rep(0, times = p + 2),
-             seq(p + 1, q * (p + 1), by = (p + 1)),
-             q * (p + 2) + 1)
+  nconn <- c(
+    rep(0, times = p + 2),
+    seq(p + 1, q * (p + 1), by = (p + 1)),
+    q * (p + 2) + 1
+  )
 
   object$nconn <- nconn
 
@@ -276,8 +289,7 @@ summary.selectnn <- function(object, ...)
 }
 
 #' @export
-print.summary.selectnn <- function(x, ...)
-{
+print.summary.selectnn <- function(x, ...) {
   cat("Call:\n")
   print(x$call)
   cat("\n")
@@ -288,6 +300,8 @@ print.summary.selectnn <- function(x, ...)
   cat("\n")
   cat("Weights:\n")
   wts <- format(round(coef.selectnn(x), 2))
-  lapply(split(wts, rep(1:(x$p + x$q + 2), diff(x$nconn))),
-         function(x) print(x, quote=FALSE))
+  lapply(
+    split(wts, rep(1:(x$p + x$q + 2), diff(x$nconn))),
+    function(x) print(x, quote = FALSE)
+  )
 }

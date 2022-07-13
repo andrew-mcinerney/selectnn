@@ -94,67 +94,100 @@ hidden_node_sel <- function(X, y, Q, n_init, type = "bulk", inf_crit = "BIC",
 #'  `"AICc"`
 #' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
+#' @param X_full Full matrix of covariates if X has some dropped
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return Inputs dropped from model
 #' @export
 input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
-                           task = "regression", unif = 3, maxit = 1000, ...) {
-  full_model <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
+                           task = "regression", unif = 3, X_full = NULL,
+                           maxit = 1000, ...) {
+  init_model <- nn_fit_tracks(X, y, q, n_init, inf_crit, task, unif,
     maxit = maxit, ...
   )
 
-  full_inf_crit <- full_model$value
+  init_inf_crit <- init_model$value
 
   p <- ncol(X)
 
-  X_full <- X
+  X_init <- X
 
-  colnames(X_full) <- 1:p
-
-  colnames(X) <- 1:p
+  delta_bic <- NULL
 
   dropped <- c()
 
-  W_opt <- full_model$W_opt
+  added <- c()
 
-  min_inf_crit <- full_inf_crit
+  W_opt <- init_model$W_opt
 
-  continue_drop <- TRUE
+  min_inf_crit <- init_inf_crit
 
-  while (continue_drop == TRUE) {
+  if (type == "bulk") {
+    continue_drop <- TRUE
+
+    while (continue_drop == TRUE) {
+      nn_in <- input_importance(
+        X = X, y = y, q = q, n_init = n_init,
+        inf_crit = inf_crit, task = task, unif = unif, maxit = maxit,
+        ...
+      )
+
+      if (nn_in$value < min_inf_crit) {
+        X <- X[, -nn_in$min, drop = FALSE]
+        p <- ncol(as.matrix(X))
+
+
+        W_opt <- nn_in$W_opt
+
+        dropped <- colnames(X_init)[!colnames(X_init) %in% colnames(X)]
+        min_inf_crit <- nn_in$value
+
+        if (ncol(X) == 1) {
+          continue_drop <- FALSE
+        }
+      } else {
+        continue_drop <- FALSE
+      }
+    }
+  } else if (type == "step") {
+    if (is.null(X_full)) {
+      stop("Error: X_full must not be null when performing stepwise")
+    }
+
+
     nn_in <- input_importance(
       X = X, y = y, q = q, n_init = n_init,
-      inf_crit = inf_crit, task = task, unif = unif, maxit = maxit,
+      inf_crit = inf_crit, task = task, unif = unif,
+      addition = TRUE, X_full = X_full, maxit = maxit,
       ...
     )
 
     if (nn_in$value < min_inf_crit) {
-      X <- X[, -nn_in$min, drop = FALSE]
+      if (names(nn_in$min) %in% colnames(X)) {
+        X <- X[, -nn_in$min, drop = FALSE]
+      } else {
+        X <- cbind(X, X_full[, names(nn_in$min), drop = FALSE])
+      }
+
+
       p <- ncol(as.matrix(X))
 
 
       W_opt <- nn_in$W_opt
 
-      dropped <- colnames(X_full)[!colnames(X_full) %in% colnames(X)]
+      dropped <- colnames(X_init)[!colnames(X_init) %in% colnames(X)]
+      added <- colnames(X)[!colnames(X) %in% colnames(X_init)]
       min_inf_crit <- nn_in$value
-
-      if (ncol(X) == 1) {
-        continue_drop <- FALSE
-      }
-
-      if (type == "step") {
-        continue_drop <- FALSE
-      }
-    } else {
-      continue_drop <- FALSE
     }
+
+    delta_bic <- nn_in$inf_crit_vec - init_inf_crit
   }
   return(list(
-    "X" = X, "p" = p, "W_opt" = W_opt, "dropped" = dropped,
-    "full_value" = full_inf_crit, "value" = min_inf_crit
+    "X" = X, "p" = p, "W_opt" = W_opt, "dropped" = dropped, "added" = added,
+    "init_value" = init_inf_crit, "value" = min_inf_crit, "delta_bic" = delta_bic
   ))
 }
+
 
 #' Determines the importance of each input
 #'
@@ -169,19 +202,30 @@ input_node_sel <- function(X, y, q, n_init, type = "bulk", inf_crit = "BIC",
 #'  `"AICc"`
 #' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
+#' @param addition Switch for addition step (default FALSE)
+#' @param X_full Full matrix of covariates if X has some dropped
 #' @param maxit maximum number of iterations for nnet (default = 100)
 #' @param ... additional argument for nnet
 #' @return The least important input node
 #' @export
 input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
-                             task = "regression", unif = 3, maxit = 1000, ...) {
-  p_full <- ncol(X)
+                             task = "regression", unif = 3,
+                             addition = FALSE, X_full = NULL, maxit = 1000, ...) {
+  if (addition == TRUE & is.null(X_full)) {
+    stop("Error: X_full must not be null to allow addition step")
+  }
 
-  inf_crit_vec <- rep(NA, p_full)
+  if (addition == TRUE & (is.null(colnames(X_full)) | is.null(colnames(X)))) {
+    stop("Error: Column names must be supplied for X and X_full")
+  }
 
-  weights_min <- vector("list", length = p_full)
+  p_init <- ncol(X)
 
-  for (p in 1:p_full) {
+  inf_crit_vec <- rep(NA, p_init)
+
+  weights_min <- vector("list", length = p_init)
+
+  for (p in 1:p_init) {
     X_new <- X[, -p, drop = FALSE]
 
     nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
@@ -191,6 +235,29 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
     weights_min[[p]] <- nn$W_opt
 
     inf_crit_vec[p] <- nn$value
+
+    names(inf_crit_vec)[p] <- colnames(X)[p]
+  }
+
+  if (addition == TRUE) {
+    dropped <- colnames(X_full)[!colnames(X_full) %in% colnames(X)]
+
+    i <- 1
+    for (p in dropped) {
+      X_new <- cbind(X, X_full[, p])
+
+      nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
+        maxit = maxit, ...
+      )
+
+      weights_min[[p_init + i]] <- nn$W_opt
+
+      inf_crit_vec[p_init + i] <- nn$value
+
+      names(inf_crit_vec)[p_init + i] <- p
+
+      i <- i + 1
+    }
   }
 
   W_opt <- weights_min[[which.min(inf_crit_vec)]]

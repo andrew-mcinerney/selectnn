@@ -12,6 +12,8 @@ input_importance(
   inf_crit = "BIC",
   task = "regression",
   unif = 3,
+  addition = FALSE,
+  X_full = NULL,
   maxit = 1000,
   ...
 )
@@ -31,6 +33,10 @@ input_importance(
 \item{task}{\code{"regression"} (default) or \code{"classification"}}
 
 \item{unif}{Random initial values max value}
+
+\item{addition}{Switch for addition step (default FALSE)}
+
+\item{X_full}{Full matrix of covariates if X has some dropped}
 
 \item{maxit}{maximum number of iterations for nnet (default = 100)}
 
