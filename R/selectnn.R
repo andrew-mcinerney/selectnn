@@ -159,6 +159,26 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     }
   }
 
+  delta_bic <- nn_input[[n_rep_i]]$delta_bic
+
+  if (n_rep_i == 1) {
+    nn_input_extra <- input_node_sel(
+      X = X_new,
+      y = y,
+      q = nn_hidden[[n_rep_h]]$min,
+      n_init = n_init,
+      type = "step",
+      inf_crit = inf_crit,
+      task = task,
+      unif = unif,
+      X_full = X,
+      maxit = maxit,
+      ...
+    )
+
+    delta_bic <- nn_input_extra$delta_bic
+  }
+
   p <- ncol(X_new)
   q <- hidden_size[n_rep_h]
   p_init <- ncol(X)
@@ -172,7 +192,6 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     value <- nn_input[[n_rep_i]]$value
   }
 
-  delta_bic <- nn_input[[n_rep_i]]$delta_bic
 
   net <- list(
     "W_opt" = W_opt,
@@ -284,6 +303,20 @@ summary.selectnn <- function(object, ...) {
 
   object$nconn <- nconn
 
+  selected <-  !colnames(object$X_full) %in% object$dropped
+  covariates <- c(colnames(object$X_full)[selected],
+                  colnames(object$X_full)[!selected])
+  bic_diff <- c(object$delta_bic[selected], object$delta_bic[!selected])
+  selected_yesno <- ifelse(selected, "Yes", "No")
+
+  coefdf <- data.frame(
+    Covariate = covariates,
+    Selected = selected_yesno,
+    `Delta BIC` = round(bic_diff, 3)
+  )
+
+  object$coefdf <- coefdf
+
   class(object) <- c("summary.selectnn", class(object))
   return(object)
 }
@@ -297,6 +330,11 @@ print.summary.selectnn <- function(x, ...) {
   cat("Number of hidden nodes:", x$q, "\n")
   cat("\n")
   cat("Value:", x$val, "\n")
+  cat("\n")
+  cat("Inputs:\n")
+  print(x$coefdf,
+        row.names = FALSE
+  )
   cat("\n")
   cat("Weights:\n")
   wts <- format(round(coef.selectnn(x), 2))
