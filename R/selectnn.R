@@ -147,8 +147,8 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
       n_rep_i <- n_rep_i + 1
 
       if (!is.null(nn_input[[n_rep_i]]$dropped) & ncol(X_new) > 1) {
-        dropped <- c(dropped, nn_input[[n_rep_i]]$dropped)
-        X_new <- X[, !colnames(X) %in% nn_input[[n_rep_i]]$dropped, drop = FALSE]
+        X_new <- nn_input[[n_rep_i]]$X
+        dropped <- colnames(X)[!colnames(X) %in% colnames(X_new)]
       } else {
         continue <- 0
       }
@@ -306,8 +306,8 @@ summary.selectnn <- function(object, ...) {
   selected <-  !colnames(object$X_full) %in% object$dropped
   covariates <- c(colnames(object$X_full)[selected],
                   colnames(object$X_full)[!selected])
-  bic_diff <- c(object$delta_bic[selected], object$delta_bic[!selected])
-  selected_yesno <- ifelse(selected, "Yes", "No")
+  bic_diff <- object$delta_bic
+  selected_yesno <- c(rep("Yes", sum(selected)), rep("No", sum(!selected)))
 
   coefdf <- data.frame(
     Covariate = covariates,
@@ -320,6 +320,7 @@ summary.selectnn <- function(object, ...) {
   class(object) <- c("summary.selectnn", class(object))
   return(object)
 }
+
 
 #' @export
 print.summary.selectnn <- function(x, ...) {
