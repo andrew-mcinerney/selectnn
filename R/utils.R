@@ -12,7 +12,7 @@ sigmoid <- function(x) {
 #'
 #'
 #' @param p number of inputs
-#' @param structure of hidden layers
+#' @param q structure of hidden layers
 #' @return number of parameters
 #' @export
 n_params <- function (p, q) {
