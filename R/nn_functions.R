@@ -12,31 +12,35 @@
 #' @param task `"regression"` (default) or `"classification"`
 #' @param unif Random initial values max value
 #' @param maxit maximum number of iterations for nnet (default = 100)
+#' @param nn_fn the neural network optimiser to use
 #' @param ... additional argument for nnet
 #' @return The best model from the different tracks
 #' @export
 nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
-                          task = "regression", unif = 3, maxit = 1000, ...) {
+                              task = "regression", unif = 3, maxit = 1000,
+                              nn_fn = "nnet", ...) {
   # Function with fits n_init tracks of model and finds best
+
+  if ((length(q) > 1) & (nn_fn == "nnet")) {
+    nn_fn <- "neuralnet"
+    warning("nnet does not allow more than one hidden layer, neuralnet used instead")
+  }
 
   df <- data.frame(X, y)
   n <- nrow(X)
   p <- ncol(as.matrix(X)) # as.matrix() in case p = 1 (auto. becomes vector)
 
-  k <- (p + 2) * q + 1
+  k <- sum(c(p + 1, q + 1) * c(q, 1))
 
   weight_matrix_init <- matrix(stats::runif(n_init * k, min = -unif, max = unif), ncol = k)
 
   weight_matrix <- matrix(rep(NA, n_init * k), ncol = k)
   inf_crit_vec <- rep(NA, n_init)
-  converge <- rep(NA, n_init)
 
   if (task == "regression") {
-    linout <- TRUE
-    entropy <- FALSE
+    linear.output <- TRUE
   } else if (task == "classification") {
-    linout <- FALSE
-    entropy <- TRUE
+    linear.output <- FALSE
   } else {
     stop(sprintf(
       "Error: %s not recognised as task. Please choose regression or classification",
@@ -45,34 +49,53 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
   }
 
   for (iter in 1:n_init) {
-    nn_model <- nnet::nnet(y ~ .,
-      data = df, size = q, trace = FALSE,
-      linout = linout, entropy = entropy,
-      Wts = weight_matrix_init[iter, ], maxit = maxit, ...
-    )
 
-    weight_matrix[iter, ] <- nn_model$wts
+    if (nn_fn == "nnet") {
+
+      nn_model <- nnet::nnet(y ~ .,
+                             data = df, size = q, trace = FALSE,
+                             linout = linear.output,
+                             Wts = weight_matrix_init[iter, ],
+                             maxit = maxit, ...
+      )
+
+      weight_matrix[iter, ] <- nn_model$wts
+
+    } else if (nn_fn == "neuralnet") {
+
+      nn_model <- neuralnet::neuralnet(y ~ .,
+                                       data = df, hidden = q,
+                                       linear.output = linear.output,
+                                       startweights = weight_matrix_init[iter, ],
+                                       stepmax = maxit, ...
+      )
+
+      weight_matrix[iter, ] <- unlist(sapply(nn_model$weights[[1]], as.vector))
+
+    } else {
+      stop("nn_fn not recognised")
+    }
 
     if (task == "regression") {
-      RSS <- nn_model$value
+      RSS <- sum((y - nn_pred(X, weight_matrix[iter, ], q))^2)
       sigma2 <- RSS / n
 
       log_likelihood <- (-n / 2) * log(2 * pi * sigma2) - RSS / (2 * sigma2)
     } else if (task == "classification") {
-      log_likelihood <- -nn_model$value
+      # need to write likelihood value for binary case
+      # log_likelihood <- -nn_model$value
     }
 
     inf_crit_vec[iter] <- ifelse(inf_crit == "AIC",
-      (2 * (k + 1) - 2 * log_likelihood),
-      ifelse(inf_crit == "BIC",
-        (log(n) * (k + 1) - 2 * log_likelihood),
-        ifelse(inf_crit == "AICc",
-          (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
-          NA
-        )
-      )
+                                 (2 * (k + 1) - 2 * log_likelihood),
+                                 ifelse(inf_crit == "BIC",
+                                        (log(n) * (k + 1) - 2 * log_likelihood),
+                                        ifelse(inf_crit == "AICc",
+                                               (2 * (k + 1) * (n / (n - (k + 1) - 1)) - 2 * log_likelihood),
+                                               NA
+                                        )
+                                 )
     )
-    converge[iter] <- nn_model$convergence
   }
   W_opt <- weight_matrix[which.min(inf_crit_vec), ]
 
@@ -80,7 +103,6 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
     "W_opt" = W_opt,
     "value" = min(inf_crit_vec),
     "inf_crit_vec" = inf_crit_vec,
-    "converge" = converge,
     "weight_matrix" = weight_matrix
   ))
 }

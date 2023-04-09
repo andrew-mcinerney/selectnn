@@ -13,6 +13,7 @@ nn_fit_tracks(
   task = "regression",
   unif = 3,
   maxit = 1000,
+  nn_fn = "nnet",
   ...
 )
 }
@@ -33,6 +34,8 @@ nn_fit_tracks(
 \item{unif}{Random initial values max value}
 
 \item{maxit}{maximum number of iterations for nnet (default = 100)}
+
+\item{nn_fn}{the neural network optimiser to use}
 
 \item{...}{additional argument for nnet}
 }
