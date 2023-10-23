@@ -225,18 +225,21 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
 
   weights_min <- vector("list", length = p_init)
 
-  for (p in 1:p_init) {
-    X_new <- X[, -p, drop = FALSE]
+  if (p_init > 1) {
 
-    nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
-      maxit = maxit, ...
-    )
+    for (p in 1:p_init) {
+      X_new <- X[, -p, drop = FALSE]
 
-    weights_min[[p]] <- nn$W_opt
+      nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
+                          maxit = maxit
+      )
 
-    inf_crit_vec[p] <- nn$value
+      weights_min[[p]] <- nn$W_opt
 
-    names(inf_crit_vec)[p] <- colnames(X)[p]
+      inf_crit_vec[p] <- nn$value
+
+      names(inf_crit_vec)[p] <- colnames(X)[p]
+    }
   }
 
   if (addition == TRUE) {
@@ -247,7 +250,7 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
       X_new <- cbind(X, X_full[, p])
 
       nn <- nn_fit_tracks(X_new, y, q, n_init, inf_crit, task, unif,
-        maxit = maxit, ...
+                          maxit = maxit
       )
 
       weights_min[[p_init + i]] <- nn$W_opt
@@ -264,7 +267,7 @@ input_importance <- function(X, y, q, n_init, inf_crit = "BIC",
 
   return(list(
     "min" = which.min(inf_crit_vec),
-    "value" = min(inf_crit_vec),
+    "value" = min(inf_crit_vec, na.rm = TRUE),
     "inf_crit_vec" = inf_crit_vec,
     "weights_min" = weights_min,
     "W_opt" = W_opt
