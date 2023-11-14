@@ -209,7 +209,9 @@ selectnn.default <- function(X, y, Q, n_init, inf_crit = "BIC",
     "q" = q,
     "q_init" = q_init,
     "delta_bic" = delta_bic,
-    "call" = cl
+    "call" = cl,
+    "y" = y,
+    "task" = task
   )
 
   class(net) <- "selectnn"
