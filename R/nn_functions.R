@@ -52,8 +52,7 @@ nn_fit_tracks <- function(X, y, q, n_init, inf_crit = "BIC",
 
     if (nn_fn == "nnet") {
 
-      nn_model <- nnet::nnet(y ~ .,
-                             data = df, size = q, trace = FALSE,
+      nn_model <- nnet::nnet(X, y, size = q, trace = FALSE,
                              linout = linear.output,
                              Wts = weight_matrix_init[iter, ],
                              maxit = maxit, ...
