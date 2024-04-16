@@ -1,0 +1,23 @@
+#'  Dun Laoghaire–Rathdown Airbnb Data
+#'
+#' A subset of data from Inside Airbnb for the Dun Laoghaire–Rathdown area of
+#' Dublin from 07-Sept-2023.
+#'
+#' @format ## `airbnb`
+#' A data frame with 625 rows and 10 columns:
+#' \describe{
+#'   \item{superhost}{an indicator of whether or not the host is a superhost}
+#'   \item{num_listings}{the total number of listings that the host has}
+#'   \item{room_type}{an indicator of whether the rental is an entire home or a
+#'         private room}
+#'   \item{accomodates}{the number of people the rental accommodates}
+#'   \item{rating}{the rental’s review rating}
+#'   \item{instant}{an indicator of whether or not the listing is instantly
+#'         bookable}
+#'   \item{num_reviews}{the number of reviews per month}
+#'   \item{latitude}{the latitude of the rental}
+#'   \item{longitude}{the longitude of the rental}
+#'   \item{lnprice}{the natural logarithm of the price per night of each rental}
+#' }
+#' @source <https://insideairbnb.com/>
+"airbnb"
